@@ -1,0 +1,33 @@
+#python program to implement token ring algorithm
+class TokenRing:
+    def __init__(self, nodes):
+        self.nodes = nodes
+        self.token_holder = 0
+
+    def send_data(self, sender, receiver, message):
+        # 1. Wait until the token reaches the sender
+        while self.nodes[self.token_holder] != sender:
+            print(f"Token at Node {self.nodes[self.token_holder]}")
+            self.token_holder = (self.token_holder + 1) % len(self.nodes)
+
+        # 2. Sender gets the token
+        print(f"Token is with Node {sender}")
+        print(f"Node {sender} sends '{message}' to Node {receiver}")
+
+        # 3. Simulate message delivery across the ring
+        index = self.token_holder
+        while self.nodes[index] != receiver:
+            print(f"Message passing through Node {self.nodes[index]}")
+            index = (index + 1) % len(self.nodes)
+
+        print(f"Node {receiver} received the message: '{message}'")
+
+        # 4. Pass the token to the next node
+        self.token_holder = (self.token_holder + 1) % len(self.nodes)
+        print(f"Token passed to Node {self.nodes[self.token_holder]}")
+
+
+nodes=[0,1,2,3]
+ring=TokenRing(nodes)
+ring.send_data(1,2,"Hi from node 1")
+ring.send_data(2,3,"Hi from node 2")
