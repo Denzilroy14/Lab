@@ -1,0 +1,46 @@
+def binary_addition(a, b):
+    max_len = max(len(a), len(b))
+    a = a.zfill(max_len)
+    b = b.zfill(max_len)
+
+    result = ''
+    carry = 0
+
+    for i in reversed(range(max_len)):
+        total = carry + int(a[i]) + int(b[i])
+        bit = total % 2
+        carry = total // 2
+        result = str(bit) + result
+
+    # Add carry if any
+    if carry:
+        result = binary_addition(result, '1')
+
+    return result[-max_len:]  # Ensure block size remains constant
+
+def ones_complement(bin_str):
+    return ''.join('1' if bit == '0' else '0' for bit in bin_str)
+
+def calculate_checksum(data_blocks):
+    checksum = data_blocks[0]
+    for block in data_blocks[1:]:
+        checksum = binary_addition(checksum, block)
+    return ones_complement(checksum)
+
+def verify_checksum(data_blocks, checksum):
+    total = data_blocks[0]
+    for block in data_blocks[1:]:
+        total = binary_addition(total, block)
+    total = binary_addition(total, checksum)
+    result = ones_complement(total)
+    return all(bit == '0' for bit in result)
+
+# Example use
+data = ['11010101', '10101010', '11110000']  # 8-bit blocks
+checksum = calculate_checksum(data)
+print("Checksum:", checksum)
+
+# Verify at receiver side
+received_data = data + [checksum]
+is_valid = verify_checksum(received_data[:-1], received_data[-1])
+print("Is received data valid?", is_valid)
