@@ -1,0 +1,57 @@
+#2D parity check
+data1=[
+    [1,0,1,1,0,0,0],
+    [1,0,1,1,0,1,1],
+    [1,0,1,1,0,0,1]
+    ]
+def replace_row(data,row,count):
+    if count%2==0:
+        data[row].append(0)
+    else:
+        data[row].append(1)
+def replace_column(datac,count):
+    if count%2==0:
+        datac.append(0)
+    else:
+        datac.append(1)
+def col_check(data,col,column_data,datac):
+    while col<len(data[0]):
+        for i in data:
+            if i[col]==1:
+                column_data+=1
+        replace_column(datac,column_data)
+        column_data=0
+        col+=1
+def row_check(data,row,row_data):
+    while row<len(data):
+        for i in data[row]:
+            if i==1:
+                row_data+=1
+        replace_row(data,row,row_data)
+        row_data=0
+        row+=1
+def sender(data):
+    row=0
+    col=0
+    row_data=0
+    column_data=0
+    datac=[]
+    col_check(data,col,column_data,datac)
+    data.append(datac)
+    row_check(data,row,row_data)
+sender(data1)
+def receiver(data):
+    row=0
+    col=0
+    row_data=0
+    column_data=0
+    datac=[]
+    col_check(data,col,column_data,datac)
+    data.append(datac)
+    row_check(data,row,row_data)
+receiver(data1)
+def check(data):
+    for i in data:
+        print(i)
+    #print(data[-1])
+check(data1)
